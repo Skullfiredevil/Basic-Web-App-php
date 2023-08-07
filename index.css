@@ -14,3 +14,15 @@ a {
     text-align:center
   }
 }
+
+.cntent {
+  text-align: center;
+      border: 1px solid red;
+  }
+
+
+img, svg {
+    vertical-align: middle;
+    height: 512px;
+    width: 512px;
+  }
