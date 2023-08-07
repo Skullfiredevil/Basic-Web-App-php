@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>My Website</title>
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/favicon/site.webmanifest">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <title>My Website</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/favicon/site.webmanifest">
 </head>
+
 <body>
   <nav class="navbar navbar-expand-lg bg-white sticky-top navbar-light p-3 shadow-sm">
     <div class="container">
       <a class="navbar-brand" href="#"><i class="fa-solid fa-shop me-2"></i> <strong>IScream</strong></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="mx-auto my-3 d-lg-none d-sm-block d-xs-block">
         <div class="input-group">
-          <span class="border-info input-group-text bg-info text-white"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <span class="border-info input-group-text bg-info text-white"><i
+              class="fa-solid fa-magnifying-glass"></i></span>
           <input type="text" class="form-control border-info" style="color:#7a7a7a">
           <button class="btn btn-info text-white">Search</button>
         </div>
@@ -27,14 +35,16 @@
       <div class=" collapse navbar-collapse" id="navbarNavDropdown">
         <div class="ms-auto d-none d-lg-block">
           <div class="input-group">
-            <span class="border-info input-group-text bg-info text-white"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <span class="border-info input-group-text bg-info text-white"><i
+                class="fa-solid fa-magnifying-glass"></i></span>
             <input type="text" class="form-control border-info" style="color:#7a7a7a">
             <button class="btn btn-info text-white">Search</button>
           </div>
         </div>
         <ul class="navbar-nav ms-auto ">
           <li class="nav-item">
-            <a class="nav-link mx-2 text-uppercase" href="#"><i class="fa-solid fa-cart-shopping me-1"></i> Contact us</a>
+            <a class="nav-link mx-2 text-uppercase" href="#"><i class="fa-solid fa-cart-shopping me-1"></i> Contact
+              us</a>
           </li>
           <li class="nav-item">
             <a class="nav-link mx-2 text-uppercase" href="#"><i class="fa-solid fa-circle-user me-1"></i> Login</a>
@@ -43,9 +53,77 @@
       </div>
     </div>
   </nav>
-  <div class="cntent">
-    <p>wow</p>
+<button id="postButton" class="btn btn-primary mt-3">Post</button>
+
+<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="postModalLabel">Create a New Post</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="postForm">
+          <textarea class="form-control" id="postContent" rows="3" placeholder="Write your post..."></textarea>
+          <input type="file" id="postImage" accept="image/*">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="submitPost">Post</button>
+      </div>
+    </div>
   </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+
+  <div class="content">
+  <!-- Existing content -->
+
+</div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const postButton = document.getElementById('postButton');
+    const postModal = new bootstrap.Modal(document.getElementById('postModal'));
+    const postForm = document.getElementById('postForm');
+    const postContent = document.getElementById('postContent');
+    const postImage = document.getElementById('postImage');
+    const contentContainer = document.querySelector('.content'); // Changed the container selector
+
+    postButton.addEventListener('click', function () {
+      postModal.show();
+    });
+
+    document.getElementById('submitPost').addEventListener('click', function () {
+      const content = postContent.value.trim();
+      const image = postImage.files[0];
+
+      if (content !== '' || image) {
+        const formData = new FormData();
+        formData.append('content', content);
+        formData.append('image', image);
+
+        fetch('post_handler.php', {
+          method: 'POST',
+          body: formData,
+        })
+          .then(response => response.text())
+          .then(data => {
+            // Prepend the new post to the content container
+            const newPost = document.createElement('div');
+            newPost.className = 'post';
+            newPost.innerHTML = `
+              <p>${content}</p>
+              ${image ? `<img src="${URL.createObjectURL(image)}" alt="Posted Image">` : ''}
+            `;
+            contentContainer.insertBefore(newPost, contentContainer.firstChild);
+
+            postModal.hide();
+          })
+          .catch(error => console.error('Error posting:', error));
+      }
+    });
+  });
+</script>
 </body>
 </html>
